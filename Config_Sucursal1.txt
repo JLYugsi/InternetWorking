@@ -1,0 +1,147 @@
+============================
+CONFIGURACIÓN R1_SUCURSAL1
+============================
+enable
+conf t
+no router ospf 1
+hostname R1_SUCURSAL1
+
+interface e0/0
+ no shutdown
+
+interface e0/0.70
+ encapsulation dot1Q 70
+ ip address 192.168.32.130 255.255.255.224
+ standby 70 ip 192.168.32.129
+ standby 70 priority 110
+ standby 70 preempt
+
+interface e0/0.80
+ encapsulation dot1Q 80
+ ip address 192.168.33.50 255.255.255.240
+ standby 80 ip 192.168.33.49
+ standby 80 priority 110
+ standby 80 preempt
+
+interface e0/0.90
+ encapsulation dot1Q 90
+ ip address 192.168.32.194 255.255.255.224
+ standby 90 ip 192.168.32.193
+ standby 90 priority 110
+ standby 90 preempt
+
+ip route 0.0.0.0 0.0.0.0 10.1.10.2
+do wr
+
+============================
+CONFIGURACIÓN R2_SUCURSAL1
+============================
+enable
+conf t
+no router ospf 1
+hostname R2_SUCURSAL1
+
+interface e0/1
+ no shutdown
+
+interface e0/1.70
+ encapsulation dot1Q 70
+ ip address 192.168.32.131 255.255.255.224
+ standby 70 ip 192.168.32.129
+ standby 70 priority 100
+ standby 70 preempt
+
+interface e0/1.80
+ encapsulation dot1Q 80
+ ip address 192.168.33.51 255.255.255.240
+ standby 80 ip 192.168.33.49
+ standby 80 priority 100
+ standby 80 preempt
+
+interface e0/1.90
+ encapsulation dot1Q 90
+ ip address 192.168.32.195 255.255.255.224
+ standby 90 ip 192.168.32.193
+ standby 90 priority 100
+ standby 90 preempt
+
+ip route 0.0.0.0 0.0.0.0 10.1.10.1
+do wr
+
+============================
+CONFIGURACIÓN S1_SUCURSAL1
+============================
+enable
+conf t
+hostname S1_SUCURSAL1
+
+vlan 70
+ name DEP_PLANIFICACION
+vlan 80
+ name DEP_TI
+vlan 90
+ name DEP_ADMINISTRATIVO
+
+interface e0/0
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+ no shutdown
+
+interface e0/1
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+ no shutdown
+
+interface range e1/0 - 2
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+ channel-group 1 mode active
+ no shutdown
+
+interface Port-channel1
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+do wr
+
+============================
+CONFIGURACIÓN S2_SUCURSAL1
+============================
+enable
+conf t
+hostname S2_SUCURSAL1
+
+vlan 70
+ name DEP_PLANIFICACION
+vlan 80
+ name DEP_TI
+vlan 90
+ name DEP_ADMINISTRATIVO
+
+interface range e2/0
+ switchport mode access
+ switchport access vlan 70
+ spanning-tree portfast
+ no shutdown
+
+interface range e3/0
+ switchport mode access
+ switchport access vlan 80
+ spanning-tree portfast
+ no shutdown
+
+interface range e4/0
+ switchport mode access
+ switchport access vlan 90
+ spanning-tree portfast
+ no shutdown
+
+interface range e1/0 - 2
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+ channel-group 1 mode active
+ no shutdown
+
+interface Port-channel1
+ switchport mode trunk
+ switchport trunk encapsulation dot1q
+do wr
